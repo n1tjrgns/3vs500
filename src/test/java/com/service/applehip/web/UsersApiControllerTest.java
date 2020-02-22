@@ -1,9 +1,9 @@
 package com.service.applehip.web;
 
-import com.service.applehip.domain.Users;
-import com.service.applehip.domain.UsersRepository;
-import com.service.applehip.web.dto.UsersSaveRequestDto;
-import com.service.applehip.web.dto.UsersUpdateRequestDto;
+import com.service.applehip.domain.users.Users;
+import com.service.applehip.domain.users.UsersRepository;
+import com.service.applehip.web.userdto.UsersSaveRequestDto;
+import com.service.applehip.web.userdto.UsersUpdateRequestDto;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

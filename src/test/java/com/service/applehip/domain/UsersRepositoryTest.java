@@ -1,6 +1,8 @@
 package com.service.applehip.domain;
 
 
+import com.service.applehip.domain.users.Users;
+import com.service.applehip.domain.users.UsersRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package com.service.applehip.domain;
+package com.service.applehip.domain.users;
 
 import lombok.Builder;
 import lombok.Getter;

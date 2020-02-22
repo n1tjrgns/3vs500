@@ -1,4 +1,4 @@
-package com.service.applehip.domain;
+package com.service.applehip.domain.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

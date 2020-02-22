@@ -1,4 +1,4 @@
-package com.service.applehip.web.dto;
+package com.service.applehip.web.userdto;
 
 import lombok.Builder;
 import lombok.Getter;

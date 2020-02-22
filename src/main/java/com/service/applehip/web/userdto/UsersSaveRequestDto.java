@@ -1,6 +1,6 @@
-package com.service.applehip.web.dto;
+package com.service.applehip.web.userdto;
 
-import com.service.applehip.domain.Users;
+import com.service.applehip.domain.users.Users;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

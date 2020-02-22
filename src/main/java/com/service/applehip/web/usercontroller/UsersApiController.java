@@ -1,9 +1,9 @@
-package com.service.applehip.web;
+package com.service.applehip.web.usercontroller;
 
 import com.service.applehip.service.users.UsersService;
-import com.service.applehip.web.dto.UsersResponseDto;
-import com.service.applehip.web.dto.UsersSaveRequestDto;
-import com.service.applehip.web.dto.UsersUpdateRequestDto;
+import com.service.applehip.web.userdto.UsersResponseDto;
+import com.service.applehip.web.userdto.UsersSaveRequestDto;
+import com.service.applehip.web.userdto.UsersUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
