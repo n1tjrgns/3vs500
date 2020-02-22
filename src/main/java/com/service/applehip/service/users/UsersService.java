@@ -2,6 +2,7 @@ package com.service.applehip.service.users;
 
 import com.service.applehip.domain.Users;
 import com.service.applehip.domain.UsersRepository;
+import com.service.applehip.web.dto.UsersResponseDto;
 import com.service.applehip.web.dto.UsersSaveRequestDto;
 import com.service.applehip.web.dto.UsersUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,12 @@ public class UsersService {
         users.update(requestDto.getPassword());
 
         return id;
+    }
+
+    public UsersResponseDto findById(Long id) {
+        Users entity = usersRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 id가 없습니다. id="+ id));
+
+        return new UsersResponseDto(entity);
     }
 }
