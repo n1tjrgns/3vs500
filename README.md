@@ -21,6 +21,7 @@
 
 - Thymeleaf
 - React.js
+- GraphQL
 
 
 
