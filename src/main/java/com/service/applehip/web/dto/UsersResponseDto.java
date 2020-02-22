@@ -13,6 +13,7 @@ public class UsersResponseDto {
     private String password;
 
     public UsersResponseDto(Users entity){
+        this.id = entity.getId();
         this.name = entity.getName();
         this.email = entity.getEmail();
         this.password = entity.getPassword();
