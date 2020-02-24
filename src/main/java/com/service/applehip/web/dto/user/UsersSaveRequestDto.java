@@ -1,4 +1,4 @@
-package com.service.applehip.web.userdto;
+package com.service.applehip.web.dto.user;
 
 import com.service.applehip.domain.users.Users;
 import lombok.Builder;
