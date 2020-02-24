@@ -156,7 +156,7 @@ class UserApiControllerTest {
     }
 
     @Test
-    fun 회원정보_찾기_이름() { //UPDATE_USER_TEST_CASE
+    fun 회원정보_찾기_이름() { //FIND_USER_NAME_TEST_CASE
         val testName = "test권"
         val testEmail = "test@test.com"
         val testPassword = "123"
@@ -206,7 +206,7 @@ class UserApiControllerTest {
     }
 
     @Test
-    fun 회원정보_찾기_이메일() { //UPDATE_USER_TEST_CASE
+    fun 회원정보_찾기_이메일() { //FIND_USER_EMAIL_TEST_CASE
         val testName = "test권"
         val testEmail = "test@test.com"
         val testPassword = "123"
@@ -256,7 +256,7 @@ class UserApiControllerTest {
     }
 
     @Test
-    fun 회원정보_찾기_비밀번호() { //UPDATE_USER_TEST_CASE
+    fun 회원정보_찾기_비밀번호() { //FIND_USER_PASSWORD_TEST_CASE
         val testName = "test권"
         val testEmail = "test@test.com"
         val testPassword = "123"
@@ -306,7 +306,7 @@ class UserApiControllerTest {
     }
 
     @Test
-    fun 회원정보_찾기_이름_이메일() { //UPDATE_USER_TEST_CASE
+    fun 회원정보_찾기_이름_이메일() { //FIND_USER_NAME_AND_EMAIL_TEST_CASE
         val testName = "test권"
         val testEmail = "test@test.com"
         val testPassword = "123"
@@ -358,7 +358,7 @@ class UserApiControllerTest {
     }
 
     @Test
-    fun 회원정보_찾기_이름_이메일_비밀번호() { //UPDATE_USER_TEST_CASE
+    fun 회원정보_찾기_이름_이메일_비밀번호() { //FIND_USER_NAME_EMAIL_AND_PASSWORD_TEST_CASE
         val testName = "test권"
         val testEmail = "test@test.com"
         val testPassword = "123"
