@@ -2,10 +2,10 @@ package com.service.applehip;
 
 import org.junit.Test;
 
-class ApplehipApplicationTests {
+public class ApplehipApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
     }
 
 }
