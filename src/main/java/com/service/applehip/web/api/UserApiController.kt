@@ -2,6 +2,7 @@ package com.service.applehip.web.api
 
 import com.service.applehip.service.users.UsersService
 import com.service.applehip.web.dto.user.UsersSaveRequestDto
+import com.service.applehip.web.dto.user.UsersUpdateRequestDto
 import io.leangen.graphql.annotations.GraphQLArgument
 import io.leangen.graphql.annotations.GraphQLMutation
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi
@@ -29,4 +30,17 @@ class UserApiController(private val usersService: UsersService) { // private fin
     }
      */
 
+    /**
+     * Mutation 이름으로 updateUser를 생성함.
+     */
+    @GraphQLMutation(name = "updateUser")
+    fun update(@GraphQLArgument(name = "userId") id: Long?,
+               @GraphQLArgument(name = "request") requestDto: UsersUpdateRequestDto?): Long? = usersService.update(id, requestDto)
+    /*
+    코틀린은 중괄호 메소드가 한줄짜리인경우 return을 생략하고 = 을이용할수 있다.
+    메소드 괄호 뒤에 Long? 이라고 되어있는것이 리턴타입이다. ? 의 의미는 null이 들어갈수 있는 타입이라는 의미
+    즉, Long?은 널일수 있는 Long타입인것이다.
+    반대로
+    Long 은 null이 들어올경우 Exception이 발생한다.
+     */
 }
