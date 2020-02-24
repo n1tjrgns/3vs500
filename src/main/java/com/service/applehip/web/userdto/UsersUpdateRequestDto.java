@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UsersUpdateRequestDto {
+public class UsersUpdateRequestDto { //User의 update 로직을 담당 할 Dto.
     private String password;
 
     @Builder

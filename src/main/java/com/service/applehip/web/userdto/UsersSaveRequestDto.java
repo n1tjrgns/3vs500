@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UsersSaveRequestDto {
+public class UsersSaveRequestDto { //User의 insert 로직을 담당 할 Dto.
 
     private String name;
     private String email;

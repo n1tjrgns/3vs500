@@ -30,7 +30,7 @@ public class UsersApiControllerTest {
     private int port;
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private TestRestTemplate restTemplate;  //테스트를 위한 restTemplate
 
     @Autowired
     private UsersRepository usersRepository;
@@ -41,7 +41,7 @@ public class UsersApiControllerTest {
     }
 
     @Test
-    public void Users에_api_insert(){
+    public void Users에_api_insert(){    //insertToUsers
         //given
         String name = "test";
         String email = "test@test.com";
@@ -69,7 +69,7 @@ public class UsersApiControllerTest {
 
 
     @Test
-    public void USERS_업데이트() throws Exception{
+    public void USERS_업데이트() throws Exception{  //updateToUsers
         //given
         Users savedUsers = usersRepository.save(Users.builder()
                 .name("test")

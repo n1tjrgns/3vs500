@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class UsersService {
+public class UsersService { //회원정보 서비스 로직
 
     private final UsersRepository usersRepository;
 

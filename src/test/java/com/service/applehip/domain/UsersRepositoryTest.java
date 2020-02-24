@@ -27,7 +27,7 @@ public class UsersRepositoryTest {
     }
 
     @Test
-    public void 회원정보_받아오기(){
+    public void 회원정보_받아오기(){    //getUserInfo
         //given
         String name ="test";
         String email = "test@test.com";
