@@ -1,10 +1,12 @@
 package com.service.applehip.web.api
 
 import com.service.applehip.service.users.UsersService
+import com.service.applehip.web.dto.user.UsersResponseDto
 import com.service.applehip.web.dto.user.UsersSaveRequestDto
 import com.service.applehip.web.dto.user.UsersUpdateRequestDto
 import io.leangen.graphql.annotations.GraphQLArgument
 import io.leangen.graphql.annotations.GraphQLMutation
+import io.leangen.graphql.annotations.GraphQLQuery
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi
 import org.springframework.stereotype.Controller
 
@@ -43,4 +45,10 @@ class UserApiController(private val usersService: UsersService) { // private fin
     반대로
     Long 은 null이 들어올경우 Exception이 발생한다.
      */
+
+    /**
+     * Query 이름으로 findUser를 생성함.
+     */
+    @GraphQLQuery(name = "findUser")
+    fun findById(@GraphQLArgument(name = "userId") id: Long?): UsersResponseDto? = usersService.findById(id)
 }

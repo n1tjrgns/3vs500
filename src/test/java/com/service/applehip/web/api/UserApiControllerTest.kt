@@ -40,7 +40,7 @@ class UserApiControllerTest {
     fun tearDown()= usersRepository.deleteAll()
 
     @Test
-    fun 회원정보_저장하기() {
+    fun 회원정보_저장하기() { //SAVE_USER_TEST_CASE
         //given
         val name = "test권"
         val email = "test@test.com"
@@ -53,7 +53,19 @@ class UserApiControllerTest {
 
         val queryName = "saveUser"
 
-        // query 설정
+        /* query 설정
+
+            mutation {
+                saveUser (
+                    request : {
+                        name : "${requestDto.name}",
+                        email : "${requestDto.email}",
+                        password : "${requestDto.password}"
+                    }
+                )
+            }
+
+         */
         val query = "mutation {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
                     " $queryName (" +                // query 명  @GraphQLMutation 참조
                     " request : {" +               // 변수 명   @GraphQLArgument 참조
@@ -86,7 +98,7 @@ class UserApiControllerTest {
     }
 
     @Test
-    fun 회원정보_변경하기() {
+    fun 회원정보_변경하기() { //UPDATE_USER_TEST_CASE
         //given
         val savedUsers = usersRepository.save(Users.builder()
                 .name("test권")
@@ -103,7 +115,18 @@ class UserApiControllerTest {
 
         val updateId = savedUsers.id    // getMethod는 생략가능 get 생략가능
         val queryName = "updateUser"
-        // query 설정
+        /* query 설정
+
+            mutation {
+                updateUser (
+                    userId : $updateId,
+                    request : {
+                        password : "${requestDto.password}"
+                    }
+                )
+            }
+
+         */
         val query = "mutation {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
                 " $queryName (" +                // query 명  @GraphQLMutation 참조
                 " userId : $updateId ," +
@@ -130,5 +153,261 @@ class UserApiControllerTest {
 
         val all: List<Users> = usersRepository.findAll()
         Assertions.assertThat(all[0].password).isEqualTo(modifyPassword)
+    }
+
+    @Test
+    fun 회원정보_찾기_이름() { //UPDATE_USER_TEST_CASE
+        val testName = "test권"
+        val testEmail = "test@test.com"
+        val testPassword = "123"
+        //given
+        val savedUsers = usersRepository.save(Users.builder()
+                .name(testName)
+                .email(testEmail)
+                .password(testPassword)
+                .build())
+
+        val findId = savedUsers.id    // getMethod는 생략가능 get 생략가능
+        val queryName = "findUser"
+        /* query 설정
+
+            query {
+                findUser ( userId : $findId) {
+                    name
+                }
+            }
+
+         */
+        val query = "query {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
+                " $queryName (userId : $findId ) {" +
+                " name " +
+                "}}"
+
+        // .also는 also안에서 it을 이용하여 해당 객체를 조작한뒤 다시 해당 객체를 반환함.
+        // Kotlin에서는 new를 생략할수있음
+        val queryJson = JSONObject().also { it.put("query", query) }
+        val httpHeaders = HttpHeaders().also { it.contentType = MediaType.APPLICATION_JSON_UTF8 }  // json 형식으로 던져야함
+        val httpEntity : HttpEntity<String> = HttpEntity(queryJson.toString(), httpHeaders) //header와 함께 보내기 위함.
+
+        //when
+        val responseEntity: ResponseEntity<String> = restTemplate.postForEntity(this.getUrl(), httpEntity, String::class.java)
+
+        //then
+        Assertions.assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.OK)
+        val body = responseEntity.body
+        assertThat(body, IsNull.notNullValue()) // return value가 null이면 안됨
+
+        val dataJson = JSONObject(body).get("data") as JSONObject
+        assertThat(dataJson.get(queryName), IsNull.notNullValue())
+        val resultJson = dataJson.get(queryName) as JSONObject
+        assertThat(resultJson.get("name") as String, Matchers.equalTo(testName))
+        assertThat(resultJson.has("email"), Matchers.equalTo(false))
+        assertThat(resultJson.has("password"), Matchers.equalTo(false))
+    }
+
+    @Test
+    fun 회원정보_찾기_이메일() { //UPDATE_USER_TEST_CASE
+        val testName = "test권"
+        val testEmail = "test@test.com"
+        val testPassword = "123"
+        //given
+        val savedUsers = usersRepository.save(Users.builder()
+                .name(testName)
+                .email(testEmail)
+                .password(testPassword)
+                .build())
+
+        val findId = savedUsers.id    // getMethod는 생략가능 get 생략가능
+        val queryName = "findUser"
+        /* query 설정
+
+            query {
+                findUser ( userId : $findId) {
+                    email
+                }
+            }
+
+         */
+        val query = "query {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
+                " $queryName (userId : $findId ) {" +
+                " email " +
+                "}}"
+
+        // .also는 also안에서 it을 이용하여 해당 객체를 조작한뒤 다시 해당 객체를 반환함.
+        // Kotlin에서는 new를 생략할수있음
+        val queryJson = JSONObject().also { it.put("query", query) }
+        val httpHeaders = HttpHeaders().also { it.contentType = MediaType.APPLICATION_JSON_UTF8 }  // json 형식으로 던져야함
+        val httpEntity : HttpEntity<String> = HttpEntity(queryJson.toString(), httpHeaders) //header와 함께 보내기 위함.
+
+        //when
+        val responseEntity: ResponseEntity<String> = restTemplate.postForEntity(this.getUrl(), httpEntity, String::class.java)
+
+        //then
+        Assertions.assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.OK)
+        val body = responseEntity.body
+        assertThat(body, IsNull.notNullValue()) // return value가 null이면 안됨
+
+        val dataJson = JSONObject(body).get("data") as JSONObject
+        assertThat(dataJson.get(queryName), IsNull.notNullValue())
+        val resultJson = dataJson.get(queryName) as JSONObject
+        assertThat(resultJson.get("email") as String, Matchers.equalTo(testEmail))
+        assertThat(resultJson.has("name"), Matchers.equalTo(false))
+        assertThat(resultJson.has("password"), Matchers.equalTo(false))
+    }
+
+    @Test
+    fun 회원정보_찾기_비밀번호() { //UPDATE_USER_TEST_CASE
+        val testName = "test권"
+        val testEmail = "test@test.com"
+        val testPassword = "123"
+        //given
+        val savedUsers = usersRepository.save(Users.builder()
+                .name(testName)
+                .email(testEmail)
+                .password(testPassword)
+                .build())
+
+        val findId = savedUsers.id    // getMethod는 생략가능 get 생략가능
+        val queryName = "findUser"
+        /* query 설정
+
+            query {
+                findUser ( userId : $findId) {
+                    password
+                }
+            }
+
+         */
+        val query = "query {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
+                " $queryName (userId : $findId ) {" +
+                " password " +
+                "}}"
+
+        // .also는 also안에서 it을 이용하여 해당 객체를 조작한뒤 다시 해당 객체를 반환함.
+        // Kotlin에서는 new를 생략할수있음
+        val queryJson = JSONObject().also { it.put("query", query) }
+        val httpHeaders = HttpHeaders().also { it.contentType = MediaType.APPLICATION_JSON_UTF8 }  // json 형식으로 던져야함
+        val httpEntity : HttpEntity<String> = HttpEntity(queryJson.toString(), httpHeaders) //header와 함께 보내기 위함.
+
+        //when
+        val responseEntity: ResponseEntity<String> = restTemplate.postForEntity(this.getUrl(), httpEntity, String::class.java)
+
+        //then
+        Assertions.assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.OK)
+        val body = responseEntity.body
+        assertThat(body, IsNull.notNullValue()) // return value가 null이면 안됨
+
+        val dataJson = JSONObject(body).get("data") as JSONObject
+        assertThat(dataJson.get(queryName), IsNull.notNullValue())
+        val resultJson = dataJson.get(queryName) as JSONObject
+        assertThat(resultJson.get("password") as String, Matchers.equalTo(testPassword))
+        assertThat(resultJson.has("name"), Matchers.equalTo(false))
+        assertThat(resultJson.has("email"), Matchers.equalTo(false))
+    }
+
+    @Test
+    fun 회원정보_찾기_이름_이메일() { //UPDATE_USER_TEST_CASE
+        val testName = "test권"
+        val testEmail = "test@test.com"
+        val testPassword = "123"
+        //given
+        val savedUsers = usersRepository.save(Users.builder()
+                .name(testName)
+                .email(testEmail)
+                .password(testPassword)
+                .build())
+
+        val findId = savedUsers.id    // getMethod는 생략가능 get 생략가능
+        val queryName = "findUser"
+        /* query 설정
+
+            query {
+                findUser ( userId : $findId) {
+                    name,
+                    email
+                }
+            }
+
+         */
+        val query = "query {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
+                " $queryName (userId : $findId ) {" +
+                " name, " +
+                " email " +
+                "}}"
+
+        // .also는 also안에서 it을 이용하여 해당 객체를 조작한뒤 다시 해당 객체를 반환함.
+        // Kotlin에서는 new를 생략할수있음
+        val queryJson = JSONObject().also { it.put("query", query) }
+        val httpHeaders = HttpHeaders().also { it.contentType = MediaType.APPLICATION_JSON_UTF8 }  // json 형식으로 던져야함
+        val httpEntity : HttpEntity<String> = HttpEntity(queryJson.toString(), httpHeaders) //header와 함께 보내기 위함.
+
+        //when
+        val responseEntity: ResponseEntity<String> = restTemplate.postForEntity(this.getUrl(), httpEntity, String::class.java)
+
+        //then
+        Assertions.assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.OK)
+        val body = responseEntity.body
+        assertThat(body, IsNull.notNullValue()) // return value가 null이면 안됨
+
+        val dataJson = JSONObject(body).get("data") as JSONObject
+        assertThat(dataJson.get(queryName), IsNull.notNullValue())
+        val resultJson = dataJson.get(queryName) as JSONObject
+        assertThat(resultJson.get("name") as String, Matchers.equalTo(testName))
+        assertThat(resultJson.get("email") as String, Matchers.equalTo(testEmail))
+        assertThat(resultJson.has("password"), Matchers.equalTo(false))
+    }
+
+    @Test
+    fun 회원정보_찾기_이름_이메일_비밀번호() { //UPDATE_USER_TEST_CASE
+        val testName = "test권"
+        val testEmail = "test@test.com"
+        val testPassword = "123"
+        //given
+        val savedUsers = usersRepository.save(Users.builder()
+                .name(testName)
+                .email(testEmail)
+                .password(testPassword)
+                .build())
+
+        val findId = savedUsers.id    // getMethod는 생략가능 get 생략가능
+        val queryName = "findUser"
+        /* query 설정
+
+            query {
+                findUser ( userId : $findId) {
+                    name,
+                    email,
+                    password
+                }
+            }
+
+         */
+        val query = "query {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
+                " $queryName (userId : $findId ) {" +
+                " name, " +
+                " email, " +
+                " password" +
+                "}}"
+
+        // .also는 also안에서 it을 이용하여 해당 객체를 조작한뒤 다시 해당 객체를 반환함.
+        // Kotlin에서는 new를 생략할수있음
+        val queryJson = JSONObject().also { it.put("query", query) }
+        val httpHeaders = HttpHeaders().also { it.contentType = MediaType.APPLICATION_JSON_UTF8 }  // json 형식으로 던져야함
+        val httpEntity : HttpEntity<String> = HttpEntity(queryJson.toString(), httpHeaders) //header와 함께 보내기 위함.
+
+        //when
+        val responseEntity: ResponseEntity<String> = restTemplate.postForEntity(this.getUrl(), httpEntity, String::class.java)
+
+        //then
+        Assertions.assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.OK)
+        val body = responseEntity.body
+        assertThat(body, IsNull.notNullValue()) // return value가 null이면 안됨
+
+        val dataJson = JSONObject(body).get("data") as JSONObject
+        assertThat(dataJson.get(queryName), IsNull.notNullValue())
+        val resultJson = dataJson.get(queryName) as JSONObject
+        assertThat(resultJson.get("name") as String, Matchers.equalTo(testName))
+        assertThat(resultJson.get("email") as String, Matchers.equalTo(testEmail))
+        assertThat(resultJson.get("password") as String, Matchers.equalTo(testPassword))
     }
 }
