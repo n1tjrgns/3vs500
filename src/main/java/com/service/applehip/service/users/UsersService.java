@@ -2,9 +2,9 @@ package com.service.applehip.service.users;
 
 import com.service.applehip.domain.users.Users;
 import com.service.applehip.domain.users.UsersRepository;
-import com.service.applehip.web.userdto.UsersResponseDto;
-import com.service.applehip.web.userdto.UsersSaveRequestDto;
-import com.service.applehip.web.userdto.UsersUpdateRequestDto;
+import com.service.applehip.web.dto.user.UsersResponseDto;
+import com.service.applehip.web.dto.user.UsersSaveRequestDto;
+import com.service.applehip.web.dto.user.UsersUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
