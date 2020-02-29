@@ -14,7 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.*
+import org.springframework.jms.core.JmsTemplate
 import org.springframework.test.context.junit4.SpringRunner
+import javax.jms.MapMessage
 import kotlin.random.Random
 
 @RunWith(SpringRunner::class)
@@ -25,6 +27,8 @@ class ChatApiControllerTest {
     private var port = 0
     @Autowired
     private lateinit var restTemplate : TestRestTemplate
+    @Autowired
+    private lateinit var jmsTemplate : JmsTemplate
     // graphql 은 고정 url
     private fun getUrl() = "http://localhost:$port/graphql"
 
@@ -33,7 +37,7 @@ class ChatApiControllerTest {
     @Value(value = "\${chat.queue.prefix}")
     private lateinit var queuePrefix : String
 
-    @Test
+    @Test // 현재는 queue가 꺼져있으면 실패함
     fun 기본_URL_테스트() {
         //given
         val roomId = Random.nextInt(0,10000000)
@@ -89,13 +93,17 @@ class ChatApiControllerTest {
         val dataJson = JSONObject(body).get("data") as JSONObject // data라는 이름으로 고정됨
         MatcherAssert.assertThat(dataJson.get(queryName), IsNull.notNullValue()) //data안에 query이름과 같은 결과값이 존재
         val response = dataJson.get(queryName) as JSONObject
-        val queueNo = roomId % queueSize.toInt()    // ChatService안의 로직과 동일하게 구현
-        if(queueNo < queueSize.toInt()/2) {
-            MatcherAssert.assertThat(response["result"] as Boolean, Matchers.equalTo(true))
-        } else {
-            MatcherAssert.assertThat(response["result"] as Boolean, Matchers.equalTo(false))
-        }
-        MatcherAssert.assertThat(response["detailMsg"] as String, Matchers.equalTo(queuePrefix+"_"+queueNo))
+        MatcherAssert.assertThat(response["result"] as Boolean, Matchers.equalTo(true)) // 메시지 발송성공시 true, exception시 false
+        MatcherAssert.assertThat(response["detailMsg"] as String, Matchers.equalTo("OK"))
+
+        val queueNo = roomId % queueSize.toInt()
+        val message = jmsTemplate.receive(queuePrefix + "_" + queueNo) // 메시지를 가져온다
+        MatcherAssert.assertThat(message, Matchers.notNullValue())
+        val chat = message as MapMessage
+        println(chat)
+        MatcherAssert.assertThat(chat.getInt("roomId"), Matchers.equalTo(roomId))
+        MatcherAssert.assertThat(chat.getInt("requestId"), Matchers.equalTo(requestId))
+        MatcherAssert.assertThat(chat.getString("msg"), Matchers.equalTo(msg))
     }
 
     @Test
