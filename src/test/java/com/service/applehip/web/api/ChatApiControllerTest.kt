@@ -1,5 +1,6 @@
 package com.service.applehip.web.api
 
+import com.service.applehip.util.*
 import com.service.applehip.web.dto.chat.ChatSendRequestDto
 import org.assertj.core.api.Assertions
 import org.hamcrest.MatcherAssert
@@ -64,16 +65,18 @@ class ChatApiControllerTest {
             }
 
          */
-        val query = "mutation {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
-                           "    $queryName (" +                // query 명  @GraphQLMutation 참조
-                           "        request : {" +               // 변수 명   @GraphQLArgument 참조
-                           "            roomId:${requestDto.roomId}, " +      // 코틀린에서는 $변수명 ${변수명} 을 하면 값이 대입됨.
-                           "            msg:\"${requestDto.msg}\", " +
-                           "            requestId:${requestDto.requestId} " +
-                           "        }" +
-                           ") {" +
-                           "    result,detailMsg}" +
-                           "}"
+
+        val methodParam = GraphqlMethodParam()
+                .setParam("roomId", requestDto.roomId)
+                .setParam("msg", requestDto.msg)
+                .setParam("requestId", requestDto.requestId)
+
+        val query = GraphqlQueryBuilder(GraphqlType.MUTATION)
+                .method(queryName)
+                .methodParam(name = "request", value =  methodParam)
+                .responseList("result", "detailMsg")
+                .build()
+
         println("query:$query")
         // .also는 also안에서 it을 이용하여 해당 객체를 조작한뒤 다시 해당 객체를 반환함.
         // Kotlin에서는 new를 생략할수있음
