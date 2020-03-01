@@ -156,4 +156,59 @@ public class UsersGQApiControllerTest {
         List<Users> all = usersRepository.findAll();
         assertThat(all.get(0).getPassword()).isEqualTo(modyfiyingPassword);
     }
+
+    @Test
+    public void 회원_이름_찾기() throws JSONException {
+        Users savedUsers = usersRepository.save(Users.builder()
+                .name("test")
+                .email("test@test.com")
+                .password("123")
+                .build());
+        String url = "http://localhost:"+port+"/graphql";
+
+        String queryName = "findUser";  //쿼리 이름
+        Long findId = savedUsers.getId();
+
+
+        String query = "query {" +          //select 는 mutation 대신 query 사용
+                " "+queryName+" (" +                // query 명  @GraphQLMutation 참조
+                " userId : \""+findId+"\"" +
+                " ){ " +               // 변수 명   @GraphQLArgument 참조
+                " name " +
+                " }}";
+
+        //select GrapQL
+        /*query {
+            findUser(userId : 1	) {
+		        name
+    	    }
+        }*/
+        JSONObject queryJson = new JSONObject();
+        queryJson.put("query",query);
+
+        //헤더 셋팅
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(queryJson.toString(), httpHeaders);
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, httpEntity , String.class);
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+
+        String body = responseEntity.getBody();
+        System.out.println("body : "+ body);
+
+        //data
+        JSONObject dataJson = (JSONObject) new JSONObject(body).get("data");
+        assertThat(dataJson.get(queryName)).isNotNull();
+
+        //findUser
+        JSONObject resultJson = (JSONObject) dataJson.get(queryName);
+        assertThat(resultJson.get("name")).isEqualTo("test");
+        assertThat(resultJson.has("email")).isFalse();
+    }
 }
