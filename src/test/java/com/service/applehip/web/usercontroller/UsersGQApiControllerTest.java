@@ -3,6 +3,8 @@ package com.service.applehip.web.usercontroller;
 import com.service.applehip.domain.users.Users;
 import com.service.applehip.domain.users.UsersRepository;
 import com.service.applehip.web.dto.user.UsersSaveRequestDto;
+import com.service.applehip.web.dto.user.UsersUpdateRequestDto;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Test;
@@ -98,4 +100,60 @@ public class UsersGQApiControllerTest {
 
     }
 
+    @Test
+    public void 회원정보_수정() throws JSONException {
+        //given
+        Users savedUsers = usersRepository.save(Users.builder()
+                .name("test")
+                .email("test@test.com")
+                .password("123")
+                .build());
+
+
+        String modyfiyingPassword = "456";
+
+        UsersUpdateRequestDto requestDto = UsersUpdateRequestDto.builder()
+                .password(modyfiyingPassword)
+                .build();
+
+        String url = "http://localhost:"+port+"/graphql";
+
+        Long updateId = savedUsers.getId();
+        String queryName = "updateUser";
+
+        //GraphQL 요청 데이터
+        String query = "mutation {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
+                " "+queryName+" (" +                // query 명  @GraphQLMutation 참조
+                " userId : \""+updateId+"\", " +               // 변수 명   @GraphQLArgument 참조
+                " request : {" +
+                " password:\""+requestDto.getPassword()+"\" })}";
+
+        JSONObject queryJson = new JSONObject();
+        queryJson.put("query",query);
+
+        //헤더 셋팅
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(queryJson.toString(), httpHeaders);
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, httpEntity , String.class);
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+
+        String body = responseEntity.getBody();
+        System.out.println("body : "+ body);
+
+        JSONObject dataJson = (JSONObject) new JSONObject(body).get("data");
+
+        //insert 결과 data 값 테스트
+        assertThat(dataJson.get("updateUser")).isNotNull();
+        assertThat(dataJson.get("updateUser")).isEqualTo(1);
+
+        List<Users> all = usersRepository.findAll();
+        assertThat(all.get(0).getPassword()).isEqualTo(modyfiyingPassword);
+    }
 }
