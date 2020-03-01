@@ -1,4 +1,4 @@
-package com.service.applehip.web.usercontroller;
+package com.service.applehip.web.api;
 
 import com.service.applehip.service.users.UsersService;
 import com.service.applehip.web.dto.user.UsersResponseDto;

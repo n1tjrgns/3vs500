@@ -1,4 +1,4 @@
-package com.service.applehip.web.usercontroller;
+package com.service.applehip.web.api;
 
 import com.service.applehip.domain.users.Users;
 import com.service.applehip.domain.users.UsersRepository;
