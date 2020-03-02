@@ -1,0 +1,15 @@
+spring:
+  profiles: prod
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://###/AppleHipDev
+    username: ###
+    password: ###
+
+
+
+chat:
+  queue:
+    size: "5"
+    prefix: AP_CHAT
+
