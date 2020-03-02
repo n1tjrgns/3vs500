@@ -150,6 +150,24 @@ class GraphqlMethodParam {
         return this
     }
 
+    fun setParamObject(value : Any) : GraphqlMethodParam {
+        val methodArray = value.javaClass.declaredMethods
+        methodArray.forEach {
+            method ->
+            if(method.name.startsWith("get")) {
+                val realValue = method.invoke(value)
+                var variableName = method.name.substring(3) // getRoomId -> RoomId
+                variableName = variableName[0].toLowerCase() + variableName.substring(1)  // RoomId -> r(R.lowerCase) + oomId -> roomId
+                when(realValue) {
+                    is String -> this.setParam(variableName, realValue) // 값이 String 타입일때
+                    is Int -> this.setParam(variableName, realValue) // 값이 Int 타입일때
+                    is Long -> this.setParam(variableName, realValue) // 값이 Long 타입일때 (스마트 캐스팅으로 is Type 에서 체크된 값으로 realValue가 캐스팅됨)
+                }
+            }
+        }
+        return this
+    }
+
     override fun toString(): String {
         var result = ""
         if(paramList.size == 0) {
