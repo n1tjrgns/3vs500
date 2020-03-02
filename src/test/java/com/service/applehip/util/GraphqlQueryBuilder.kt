@@ -13,7 +13,7 @@ class GraphqlQueryBuilder(private val type: GraphqlType) {
      * Graphql 메소드 이름 설정
      */
     fun method(methodName : String) : GraphqlQueryBuilder {
-        if(method != null && methodName != "") {
+        if(method == null && methodName != "") {
             this.method = GraphqlMethod(methodName)
         }
         return this
@@ -23,6 +23,14 @@ class GraphqlQueryBuilder(private val type: GraphqlType) {
      * param이 int형일때
      */
     fun methodParam(name : String, value : Int) : GraphqlQueryBuilder {
+        this.method!!.setParam(name, value)
+        return this
+    }
+
+    /**
+     * param이 Long형일때
+     */
+    fun methodParam(name : String, value : Long) : GraphqlQueryBuilder {
         this.method!!.setParam(name, value)
         return this
     }
@@ -60,42 +68,66 @@ class GraphqlQueryBuilder(private val type: GraphqlType) {
         return "${type.type} {$method $response}"
     }
 
+    /**
+     * 메소드를 담당하는 파트
+     */
+    private class GraphqlMethod(private val methodName: String) {
 
-}
+        private val paramList = ArrayList<String>()
 
-/**
- * 메소드를 담당하는 파트
- */
-class GraphqlMethod(private val methodName: String) {
+        fun setParam(name : String, value : Int) = paramList.add("$name : $value")
+        fun setParam(name : String, value : Long) = paramList.add("$name : $value")
+        fun setParam(name : String, value : String) = paramList.add("$name : \"$value\"")
+        fun setParam(name : String, value : GraphqlMethodParam) = paramList.add("$name : {$value}")
 
-    private val paramList = ArrayList<String>()
+        override fun toString() : String {
+            var result = methodName
+            //파라미터가 없다면, 메소드명만 반환
+            if(paramList.size == 0) {
+                return result
+            }
 
-    fun setParam(name : String, value : Int) = paramList.add("$name : $value")
-    fun setParam(name : String, value : String) = paramList.add("$name : \"$value\"")
-    fun setParam(name : String, value : GraphqlMethodParam) = paramList.add("$name : {$value}")
+            // 파라미터가 있다면 해당 파라미터들을 감쌈.
+            result += "("
+            var inner = ""
+            paramList.forEach {
+                inner += ","
+                inner += it
+            }
+            if(inner != "") {
+                result += inner.substring(1)
+            }
+            result += ")"
 
-    override fun toString() : String {
-        var result = methodName
-        //파라미터가 없다면, 메소드명만 반환
-        if(paramList.size == 0) {
             return result
         }
+    }
 
-        // 파라미터가 있다면 해당 파라미터들을 감쌈.
-        result += "("
-        var inner = ""
-        paramList.forEach {
-            inner += ","
-            inner += it
-        }
-        if(inner != "") {
-            result += inner.substring(1)
-        }
-        result += ")"
 
-        return result
+
+    /**
+     * response를 관리하는 class
+     */
+    private class GraphqlResponse {
+
+        private val responseList = ArrayList<String>()
+
+        fun setResponse(response : String) = this.responseList.add(response)
+
+        override fun toString(): String {
+            if(responseList.size == 0) {
+                return ""
+            }
+            var result = ""
+            for (response in responseList) {
+                result += ",$response"
+            }
+            return "{" + result.substring(1) + "}"
+        }
     }
 }
+
+
 
 /**
  * 메소드 파라미터 전용
@@ -107,8 +139,32 @@ class GraphqlMethodParam {
         paramList.add("$name : $value")
         return this
     }
+
+    fun setParam(name : String, value : Long) : GraphqlMethodParam {
+        paramList.add("$name : $value")
+        return this
+    }
+
     fun setParam(name : String, value : String): GraphqlMethodParam {
         paramList.add("$name : \"$value\"")
+        return this
+    }
+
+    fun setParamObject(value : Any) : GraphqlMethodParam {
+        val methodArray = value.javaClass.declaredMethods
+        methodArray.forEach {
+            method ->
+            if(method.name.startsWith("get")) {
+                val realValue = method.invoke(value)
+                var variableName = method.name.substring(3) // getRoomId -> RoomId
+                variableName = variableName[0].toLowerCase() + variableName.substring(1)  // RoomId -> r(R.lowerCase) + oomId -> roomId
+                when(realValue) {
+                    is String -> this.setParam(variableName, realValue) // 값이 String 타입일때
+                    is Int -> this.setParam(variableName, realValue) // 값이 Int 타입일때
+                    is Long -> this.setParam(variableName, realValue) // 값이 Long 타입일때 (스마트 캐스팅으로 is Type 에서 체크된 값으로 realValue가 캐스팅됨)
+                }
+            }
+        }
         return this
     }
 
@@ -122,27 +178,6 @@ class GraphqlMethodParam {
         }
 
         return result.substring(1)
-    }
-}
-
-/**
- * response를 관리하는 class
- */
-class GraphqlResponse {
-
-    private val responseList = ArrayList<String>()
-
-    fun setResponse(response : String) = this.responseList.add(response)
-
-    override fun toString(): String {
-        if(responseList.size == 0) {
-            return ""
-        }
-        var result = ""
-        for (response in responseList) {
-            result += ",$response"
-        }
-        return "{" + result.substring(1) + "}"
     }
 }
 
