@@ -13,7 +13,7 @@ class GraphqlQueryBuilder(private val type: GraphqlType) {
      * Graphql 메소드 이름 설정
      */
     fun method(methodName : String) : GraphqlQueryBuilder {
-        if(method != null && methodName != "") {
+        if(method == null && methodName != "") {
             this.method = GraphqlMethod(methodName)
         }
         return this
