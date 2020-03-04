@@ -7,7 +7,9 @@ spring:
       password: ###
       driver-class-name: org.mariadb.jdbc.Driver
 
+
 chat:
   queue:
     size: "5"
     prefix: AP_CHAT
+

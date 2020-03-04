@@ -11,7 +11,7 @@ spring:
   application:
     name: 3vs500
 
-  #Activemq 설정
+ #Activemq 설정
   activemq:
     broker-url: ##
     user: ##

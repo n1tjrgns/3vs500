@@ -64,19 +64,18 @@ class ChatApiControllerTest {
                         msg: : "${requestDto.msg}",
                         requestId : ${requestDto.requestId}
                     }
-                )
+                ) {
+                result,
+                detailMsg
+                }
             }
 
          */
 
-        val methodParam = GraphqlMethodParam()
-                .setParam("roomId", requestDto.roomId)
-                .setParam("msg", requestDto.msg)
-                .setParam("requestId", requestDto.requestId)
 
         val query = GraphqlQueryBuilder(GraphqlType.MUTATION)
                 .method(queryName)
-                .methodParam(name = "request", value =  methodParam)
+                .methodParam(name = "request", value =  GraphqlMethodParam().setParamObject(requestDto))
                 .responseList("result", "detailMsg")
                 .build()
 
@@ -124,8 +123,9 @@ class ChatApiControllerTest {
             }
 
          */
-        val query = "query {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
-                "    $queryName }"
+        val query = GraphqlQueryBuilder(GraphqlType.QUERY)
+                .method(queryName)
+                .build()
         println("query:$query")
         // .also는 also안에서 it을 이용하여 해당 객체를 조작한뒤 다시 해당 객체를 반환함.
         // Kotlin에서는 new를 생략할수있음
