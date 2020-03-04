@@ -6,6 +6,7 @@ import com.service.applehip.web.dto.user.UsersSaveRequestDto;
 import com.service.applehip.web.dto.user.UsersUpdateRequestDto;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
+import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -42,7 +43,7 @@ public class UsersGQApiController {
     public UsersResponseDto findById(@PathVariable Long id){
         return usersService.findById(id);
     }*/
-    @GraphQLMutation(name = "findUser")
+    @GraphQLQuery(name = "findUser") //get 방식은 GraphQLQuery 어노테이션 사용
     public UsersResponseDto findById(@GraphQLArgument(name = "userId") Long id){
         return usersService.findById(id);
     }

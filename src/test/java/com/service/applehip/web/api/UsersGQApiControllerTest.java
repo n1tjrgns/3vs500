@@ -21,7 +21,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                    properties = "classpath:application-local.yml")
 public class UsersGQApiControllerTest {
 
     @LocalServerPort
@@ -90,7 +91,8 @@ public class UsersGQApiControllerTest {
 
         //insert 결과 data 값 테스트
         assertThat(dataJson.get("saveUser")).isNotNull();
-        assertThat(dataJson.get("saveUser")).isEqualTo(1);
+        //assertThat(dataJson.get("saveUser")).isEqualTo(1); //auto-increment 문제로 아래처럼 테스트 변경
+        assertThat(Integer.parseInt(String.valueOf(dataJson.get("saveUser")))).isGreaterThan(0);
 
         //DB 적재된 데이터 테스트
         List<Users> all = usersRepository.findAll();
@@ -124,7 +126,7 @@ public class UsersGQApiControllerTest {
         //GraphQL 요청 데이터
         String query = "mutation {" +          // 데이터를 변경하는 작업은 mutation 이 들어감
                 " "+queryName+" (" +                // query 명  @GraphQLMutation 참조
-                " userId : \""+updateId+"\", " +               // 변수 명   @GraphQLArgument 참조
+                " userId : "+updateId+" " +               // 변수 명   @GraphQLArgument 참조
                 " request : {" +
                 " password:\""+requestDto.getPassword()+"\" })}";
 
@@ -151,7 +153,7 @@ public class UsersGQApiControllerTest {
 
         //insert 결과 data 값 테스트
         assertThat(dataJson.get("updateUser")).isNotNull();
-        assertThat(dataJson.get("updateUser")).isEqualTo(1);
+        assertThat(Integer.parseInt(String.valueOf(dataJson.get("updateUser")))).isGreaterThan(0);
 
         List<Users> all = usersRepository.findAll();
         assertThat(all.get(0).getPassword()).isEqualTo(modyfiyingPassword);
@@ -172,7 +174,7 @@ public class UsersGQApiControllerTest {
 
         String query = "query {" +          //select 는 mutation 대신 query 사용
                 " "+queryName+" (" +                // query 명  @GraphQLMutation 참조
-                " userId : \""+findId+"\"" +
+                " userId : "+findId+" " +
                 " ){ " +               // 변수 명   @GraphQLArgument 참조
                 " name " +
                 " }}";
