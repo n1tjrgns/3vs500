@@ -1,6 +1,8 @@
 package com.service.applehip.web.api
 
-import com.service.applehip.util.*
+import com.service.applehip.util.GraphqlMethodParam
+import com.service.applehip.util.GraphqlQueryBuilder
+import com.service.applehip.util.GraphqlType
 import com.service.applehip.web.dto.chat.ChatSendRequestDto
 import org.assertj.core.api.Assertions
 import org.hamcrest.MatcherAssert
@@ -21,7 +23,8 @@ import javax.jms.MapMessage
 import kotlin.random.Random
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) //랜덤 포트로 테스트 환경 설정
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+                                ,properties = ["classpath:application-local.yml"]) //랜덤 포트로 테스트 환경 설정
 class ChatApiControllerTest {
 
     @LocalServerPort
