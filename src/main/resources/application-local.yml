@@ -7,10 +7,6 @@ spring:
       enabled: true
   profiles: local
 
-  ##java.lang.IllegalStateException: Failed to load ApplicationContext 에러 해결
-  main:
-    allow-bean-definition-overriding: true
-
   ## h2 db 추가
   h2:
     console:
