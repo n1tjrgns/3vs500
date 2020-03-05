@@ -11,6 +11,10 @@ spring:
   application:
     name: 3vs500
 
+  ##java.lang.IllegalStateException: Failed to load ApplicationContext 에러 해결
+  main:
+    allow-bean-definition-overriding: true
+
  #Activemq 설정
   activemq:
     broker-url: ##
