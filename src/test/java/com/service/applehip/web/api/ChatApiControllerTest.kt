@@ -24,7 +24,7 @@ import kotlin.random.Random
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-                                ,properties = ["classpath:application-local.yml"]) //랜덤 포트로 테스트 환경 설정
+                                ,properties = ["spring.profiles.active=local"]) //랜덤 포트로 테스트 환경 설정
 class ChatApiControllerTest {
 
     @LocalServerPort
