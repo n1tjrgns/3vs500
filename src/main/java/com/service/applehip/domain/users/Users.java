@@ -1,6 +1,5 @@
 package com.service.applehip.domain.users;
 
-import com.service.applehip.domain.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Users extends BaseTimeEntity { //회원정보 클래스
+public class Users {//extends BaseTimeEntity //회원정보 클래스
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
