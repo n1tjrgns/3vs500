@@ -1,5 +1,6 @@
 package com.service.applehip.config.auth;
 
+import com.service.applehip.config.auth.dto.OAuthAttributes;
 import com.service.applehip.config.auth.dto.SessionUser;
 import com.service.applehip.domain.users.GoogleUser;
 import com.service.applehip.domain.users.GoogleUserRepository;

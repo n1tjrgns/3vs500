@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class GoogleUser extends BaseTimeEntity {
+public class GoogleUser extends BaseTimeEntity { //구글 로그인 연동정보 저장 엔티티 클래스
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

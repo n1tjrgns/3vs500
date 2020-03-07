@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @RequiredArgsConstructor
 @EnableWebSecurity // SpringSecurity 설정 활성화
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {  // 스프링 시큐리티 설정 Config 클래스
 
     private final CustomOAuth2UserService customOAuth2UserService;
 
