@@ -1,0 +1,15 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: #클라이언트 ID#
+            client-secret: #클라이언트 보안 키#
+            scope: profile, email
+
+# scope의 default 값은 openId, profile, email 이다. 그런데 위에서는 2개만 설정해 줬다. 왜??
+# -> openId가 scope에 포함되면 Open Id Provider로 인식한다.
+# 그게 뭔 상관?
+# -> OpenId Provider인 서비스(구글)와 그렇지 않은 서비스(네이버/카카오)로 나눠서 OAuth2Service를 만들어야 한다.
+# -> 그래서 하나의 OAuth2Service로 사용하기 위해 scope에서 제외 시킴
