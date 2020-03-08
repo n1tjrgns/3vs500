@@ -19,6 +19,7 @@ build/
 *.iws
 *.iml
 *.ipr
+application-oauth.yml
 out/
 
 ### NetBeans ###
