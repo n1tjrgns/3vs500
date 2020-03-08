@@ -1,11 +1,11 @@
 package com.service.applehip.web.api
 
-import com.service.applehip.util.GraphqlMethodParam
-import com.service.applehip.util.GraphqlQueryBuilder
-import com.service.applehip.util.GraphqlType
-import com.service.applehip.util.HamcrestTester
-import com.service.applehip.web.dto.chat.ChatRoomInfoSaveRequest
+import com.service.applehip.domain.seq.TableSeq
+import com.service.applehip.domain.seq.TableSeqRepository
+import com.service.applehip.util.*
+import com.service.applehip.web.dto.chat.MakeChatRoomRequest
 import org.json.JSONObject
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,20 +25,30 @@ class ChatRoomApiControllerTest : HamcrestTester() {
     @Autowired
     private lateinit var restTemplate : TestRestTemplate
 
+
     private fun getUrl() = "http://localhost:$port/graphql"
+
+    companion object{
+        @Autowired
+        private lateinit var tableSeqRepository : TableSeqRepository
+
+        @BeforeClass
+        fun 테이블_시퀀스_생성() {
+            tableSeqRepository.save(TableSeq(tableName = "CHATROOM_INFO", currentSeq = 0))
+        }
+    }
 
     @Test
     fun 채팅방생성() {
         //given
         val regUserNo = 1L
         val targetUserNo = 2L
-        val userList = "$regUserNo|$targetUserNo"
-        val requestDto = ChatRoomInfoSaveRequest(
-                regUserNo = regUserNo,
-                userList = userList
+        val requestDto = MakeChatRoomRequest(
+                requestUserNo = regUserNo,
+                targetUserNo = targetUserNo
         )
         //query
-        val queryName = "createChatRoomInfo"
+        val queryName = "createChatRoom"
         val query = GraphqlQueryBuilder(GraphqlType.MUTATION)
                 .method(queryName)
                 .methodParam("request", GraphqlMethodParam().setParamObject(requestDto))

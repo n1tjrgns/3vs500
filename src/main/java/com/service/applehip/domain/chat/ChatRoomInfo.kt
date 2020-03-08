@@ -11,15 +11,14 @@ import javax.persistence.*
 @Table(name = "CHATROOM_INFO")
 class ChatRoomInfo(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id : Long? = null,
     @Column
-    var maxSeq : Long = 0,
+    var maxSeq : Long = 0, //마지막 글 순번
     @Column
-    var userList : String = "",
+    var userList : String = "", // 참여한 유저 리스트
     @Column
     @LastModifiedDate
-    var lastDate : LocalDateTime? = null,
+    var lastDate : LocalDateTime? = null, //마지막 글 작성시간
     @Column
     var delYn : String = "N",
     @Column

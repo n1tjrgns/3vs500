@@ -12,6 +12,8 @@ open class HamcrestTester {
             MatcherAssert.assertThat(actual, matcher)
     fun <T> assertThatEqual(actual : T, prediction : T) =
             MatcherAssert.assertThat(actual, Matchers.equalTo(prediction))
+    fun <T : Comparable<T>> assertThatGreaterThanOrEqual(actual : T, predication : T) =
+            MatcherAssert.assertThat(actual, Matchers.greaterThanOrEqualTo(predication))
     fun assertThatIsNotNullValue(actual : Any?) =
             MatcherAssert.assertThat(actual, Matchers.notNullValue())
 }
