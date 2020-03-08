@@ -9,8 +9,8 @@ spring:
             scope: profile, email
 
           naver:
-            client-id: ##
-            client-secret: ##
+            client-id: Gx6zY0T4fhxqFsU050xo
+            client-secret: 4ljXHMD35A
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             scope: name,email,profile_image
