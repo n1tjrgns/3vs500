@@ -43,6 +43,8 @@ dependencies {
     compile group: 'com.zaxxer', name: 'HikariCP', version: '3.3.0'
     compile("org.mariadb.jdbc:mariadb-java-client")
     compile('org.springframework.boot:spring-boot-starter-oauth2-client')
+    compile ('pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0')
+    compile('org.springframework.boot:spring-boot-starter-mustache')
 
 }
 
