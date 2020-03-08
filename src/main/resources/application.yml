@@ -15,14 +15,12 @@ spring:
   ##java.lang.IllegalStateException: Failed to load ApplicationContext 에러 해결
   main:
     allow-bean-definition-overriding: true
-  mustache:
-    prefix: classpath:/templates/
-    suffix: .mustache
-  #Activemq 설정
+
+ #Activemq 설정
   activemq:
-    broker-url: ssl://b-510cbe43-6410-48ee-b743-d5d62c774e70-1.mq.ap-northeast-2.amazonaws.com:61617
-    user: ApAdmin
-    password: elwlxkf12#$56
+    broker-url: ##
+    user: ##
+    password: ##
 
   jpa:
     show-sql: false
