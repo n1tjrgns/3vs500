@@ -25,7 +25,6 @@ spring:
 
             # 네이버는 spring security를 공식 지원해주지 않기 때문에 Common-OAuth2Provider에서 해주던 값을 전부 수동으로 입력해줘야함.
             # 기준이 되는 user_name의 이름을 네이버에서는 response로 해야함. 네이버 회원 조회시 반환되는 JSON 형태 때문에
-
 # scope의 default 값은 openId, profile, email 이다. 그런데 위에서는 2개만 설정해 줬다. 왜??
 # -> openId가 scope에 포함되면 Open Id Provider로 인식한다.
 # 그게 뭔 상관?
