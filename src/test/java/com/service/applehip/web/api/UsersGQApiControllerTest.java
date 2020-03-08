@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-                    properties = "classpath:application-local.yml")
+                    properties = "spring.profiles.active=local")
 public class UsersGQApiControllerTest {
 
     @LocalServerPort
