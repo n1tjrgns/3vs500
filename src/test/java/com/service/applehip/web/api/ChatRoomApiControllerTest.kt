@@ -5,14 +5,13 @@ import com.service.applehip.domain.seq.TableSeqRepository
 import com.service.applehip.util.*
 import com.service.applehip.web.dto.chat.MakeChatRoomRequest
 import org.json.JSONObject
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.*
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
@@ -27,15 +26,12 @@ class ChatRoomApiControllerTest : HamcrestTester() {
 
 
     private fun getUrl() = "http://localhost:$port/graphql"
+    @Autowired
+    private lateinit var tableSeqRepository : TableSeqRepository
 
-    companion object{
-        @Autowired
-        private lateinit var tableSeqRepository : TableSeqRepository
-
-        @BeforeClass
-        fun 테이블_시퀀스_생성() {
-            tableSeqRepository.save(TableSeq(tableName = "CHATROOM_INFO", currentSeq = 0))
-        }
+    @Before
+    fun 테이블_시퀀스_생성() {
+        tableSeqRepository.save(TableSeq(tableName = "CHATROOM_INFO", currentSeq = 0))
     }
 
     @Test
@@ -55,16 +51,7 @@ class ChatRoomApiControllerTest : HamcrestTester() {
                 .build()
         println("query : $query")
 
-        //when
-        val queryJson = JSONObject().also { it.put("query", query) }
-        val httpHeaders = HttpHeaders().also { it.contentType = MediaType.APPLICATION_JSON_UTF8 }
-        val httpEntity : HttpEntity<String> = HttpEntity(queryJson.toString(), httpHeaders)
-        val responseEntity : ResponseEntity<String> = restTemplate.postForEntity(this.getUrl(), httpEntity, String::class.java)
-
-        //then
-        this.assertThatEqual(responseEntity.statusCode, HttpStatus.OK)
-        val body = responseEntity.body.also { println("responseBody : $it") }
-        this.assertThatIsNotNullValue(body)
+        val body = GraphqlTester.graphqlTest(query = query, restTemplate = restTemplate, url = this.getUrl())
         val dataJson = JSONObject(body).get("data") as JSONObject
         this.assertThatIsNotNullValue(dataJson)
         val response = dataJson.get(queryName) as String?

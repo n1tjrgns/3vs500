@@ -2,6 +2,7 @@ package com.service.applehip.web.api;
 
 import com.service.applehip.domain.users.Users;
 import com.service.applehip.domain.users.UsersRepository;
+import com.service.applehip.util.GraphqlTester;
 import com.service.applehip.web.dto.user.UsersSaveRequestDto;
 import com.service.applehip.web.dto.user.UsersUpdateRequestDto;
 import org.json.JSONException;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -65,28 +65,7 @@ public class UsersGQApiControllerTest {
                 " email:\""+requestDto.getEmail()+"\", " +
                 " password:\""+requestDto.getPassword()+"\" })}";
 
-        //요청 데이터를 JSONObject에 담기
-        JSONObject queryJson = new JSONObject();
-        queryJson.put("query",query);
-
-        //헤더 셋팅
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> httpEntity = new HttpEntity<>(queryJson.toString(), httpHeaders);
-
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, httpEntity, String.class);
-
-        //응답코드 테스트
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        //응답바디 데이터 유무 확인
-        assertThat(responseEntity.getBody()).isNotNull();
-
-        //assertThat(new JSONObject(responseEntity.getBody()).get("data")).isNotNull();
-        //((JSONObject) new JSONObject(responseEntity.getBody()).get("data")).get("saveUser");
-        String body = responseEntity.getBody();
-        System.out.println("body : "+ body);
-
+        String body = GraphqlTester.graphqlTest(query, restTemplate, url);
         JSONObject dataJson = (JSONObject) new JSONObject(body).get("data");
 
         //insert 결과 data 값 테스트
@@ -130,24 +109,7 @@ public class UsersGQApiControllerTest {
                 " request : {" +
                 " password:\""+requestDto.getPassword()+"\" })}";
 
-        JSONObject queryJson = new JSONObject();
-        queryJson.put("query",query);
-
-        //헤더 셋팅
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> httpEntity = new HttpEntity<>(queryJson.toString(), httpHeaders);
-
-        //when
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, httpEntity , String.class);
-
-        //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotNull();
-
-        String body = responseEntity.getBody();
-        System.out.println("body : "+ body);
+        String body = GraphqlTester.graphqlTest(query, restTemplate, url);
 
         JSONObject dataJson = (JSONObject) new JSONObject(body).get("data");
 
@@ -185,24 +147,8 @@ public class UsersGQApiControllerTest {
 		        name
     	    }
         }*/
-        JSONObject queryJson = new JSONObject();
-        queryJson.put("query",query);
 
-        //헤더 셋팅
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> httpEntity = new HttpEntity<>(queryJson.toString(), httpHeaders);
-
-        //when
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, httpEntity , String.class);
-
-        //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotNull();
-
-        String body = responseEntity.getBody();
-        System.out.println("body : "+ body);
+        String body = GraphqlTester.graphqlTest(query, restTemplate, url);
 
         //data
         JSONObject dataJson = (JSONObject) new JSONObject(body).get("data");
