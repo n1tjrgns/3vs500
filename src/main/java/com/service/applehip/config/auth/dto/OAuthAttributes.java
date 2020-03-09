@@ -27,9 +27,30 @@ public class OAuthAttributes {  // 구글 사용자 정보가 업데이트 되�
 
     //OAuth2User에서 반환하는 사용자 정보는 Map이기 때문에 값 하나하나를 변환해야 한다.
     public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes){
+        //attributes : {resultcode=00, message=success, response={id=62284554, profile_image=https://ssl.pstatic.net/static/pwe/address/img_profile.png, email=n1tjrgns@naver.com, name=조석훈}}
+        //반환하는 사용자만 판단하여 분리
+        if("naver".equals(registrationId)){
+            return ofNaver("id", attributes);
+        }
+
         return ofGoogle(userNameAttributeName, attributes);
     }
 
+    //네이버 인증 정보
+    private static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, Object> attributes) {
+        //설정에서 알 수 있듯이 naver는 응답을 user_name_attribute: response 이렇게 줘서 구글과 약간 다름
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+        return OAuthAttributes.builder()
+                .name((String)response.get("name"))
+                .email((String)response.get("email"))
+                .picture((String)response.get("profile_image"))
+                .attributes(response)
+                .nameAttributeKey(userNameAttributeName)
+                .build();
+    }
+
+    //구글 인증 정보
     private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes){
 
         return OAuthAttributes.builder()
