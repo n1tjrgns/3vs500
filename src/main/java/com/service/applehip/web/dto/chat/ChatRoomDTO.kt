@@ -3,6 +3,8 @@ package com.service.applehip.web.dto.chat
 import com.service.applehip.domain.chat.ChatRoomInfo
 import com.service.applehip.domain.chat.ChatRoomList
 import com.service.applehip.domain.chat.ChatRoomListId
+import com.service.applehip.web.dto.user.UsersResponseDto
+import java.time.LocalDateTime
 
 class ChatRoomInfoSaveRequest(
         var userList : String = "",
@@ -56,4 +58,28 @@ class MakeChatRoomRequest(
                             chatroomId = chatRoomInfoId
                     )
             )
+}
+
+/**
+ * 채팅방 리스트를 반환
+ */
+class ChatRoomResponseDto(
+        var chatLastReadSeq : Long = 0, //
+        var chatRoomJoinSeq : Long = 0,
+        var lastChatRoomSeq : Long = 0,
+        var chatRoomId : Long = 0,
+        var chatRoomName : String = "",
+        var lastWriteDate : LocalDateTime? = null,
+        var userList : ArrayList<UsersResponseDto> = ArrayList()
+) {
+    constructor(chatRoom : ChatRoomList, chatRoomInfo : ChatRoomInfo) : this() {
+        this.chatRoomId = chatRoomInfo.id?:0
+        this.chatLastReadSeq = chatRoom.lastChatSeq
+        this.chatRoomJoinSeq = chatRoom.startChatSeq
+        this.lastChatRoomSeq = chatRoomInfo.maxSeq
+        this.lastWriteDate = chatRoomInfo.lastDate
+        this.chatRoomName = chatRoom.chatroomName
+    }
+
+    fun addUser(user : UsersResponseDto) = this.userList.add(user)
 }
