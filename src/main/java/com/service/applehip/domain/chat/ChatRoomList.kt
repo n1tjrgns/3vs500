@@ -30,9 +30,9 @@ class ChatRoomList(
 @Embeddable
 class ChatRoomListId( //PK가 여러개의 컬럼을 합쳐서 생성할때
         @Column
-        private var userNo: Long?,  // MEMBER_INFO TABLE 의 PK
+        var userNo: Long?,  // MEMBER_INFO TABLE 의 PK
         @Column
-        private var chatroomId: Long? // CHATROOM_INFO 의 PK
+        var chatroomId: Long? // CHATROOM_INFO 의 PK
 ) : Serializable {
         constructor() : this(null, null)
 }

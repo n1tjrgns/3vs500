@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {  // 스프링
                 .headers().frameOptions().disable()
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/","/css/**","/images/**","/js/**","/h2-console/**").permitAll()
+                    .antMatchers("/","/css/**","/images/**","/js/**","/h2-console/**","/gui","/graphql").permitAll()
                     .antMatchers("/3vs500/v1/users").hasRole(Role.USER.name())
                     .anyRequest().authenticated()
                 .and()

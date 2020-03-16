@@ -9,10 +9,12 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(name = "MEMBER_INFO")
 public class Users {//extends BaseTimeEntity //회원정보 클래스
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "USER_NO")
     private Long id;    //회원 Pk
 
     @Column(length = 20)

@@ -6,7 +6,7 @@ import com.service.applehip.domain.users.Users
 import com.service.applehip.domain.users.UsersRepository
 import com.service.applehip.util.HamcrestTester
 import org.junit.After
-import org.junit.BeforeClass
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,28 +21,24 @@ import java.time.ZoneOffset
 class ChatRoomListRepositoryTest : HamcrestTester(){
     @Autowired
     private lateinit var chatRoomListRepository: ChatRoomListRepository
-
-    companion object {
-        @Autowired
-        private lateinit var chatRoomInfoRepository : ChatRoomInfoRepository
-        @Autowired
-        private lateinit var userRepository : UsersRepository
-        @BeforeClass
-        fun 테이블_시퀀스_생성() {
-            val user  = userRepository.save(
-                    Users.builder()
-                            .password("123")
-                            .name("Test")
-                            .email("khmin25@humsuon.com")
-                            .build())
-            chatRoomInfoRepository.save(
-                    ChatRoomInfo(
-                            id = 1,
-                            regUserNo = user.id,
-                            userList = "${user.id}"))
-        }
+    @Autowired
+    private lateinit var chatRoomInfoRepository : ChatRoomInfoRepository
+    @Autowired
+    private lateinit var userRepository : UsersRepository
+    @Before
+    fun 테이블_시퀀스_생성() {
+        val user  = userRepository.save(
+                Users.builder()
+                        .password("123")
+                        .name("Test")
+                        .email("khmin25@humsuon.com")
+                        .build())
+        chatRoomInfoRepository.save(
+                ChatRoomInfo(
+                        id = 1,
+                        regUserNo = user.id,
+                        userList = "${user.id}"))
     }
-
 
     @After //단위 테스트가 끝날 때 수행 될 작업을 지정하는 어노테이션
     fun cleanup() {  // 단위 테스트가 끝나면 repo를 delete All 하여 비움.
@@ -70,12 +66,44 @@ class ChatRoomListRepositoryTest : HamcrestTester(){
 
         //then
         val chatRoom = chatRoomList[0]
-        this.assertThatGreaterThanOrEqual(chatRoom.id.toString(), ChatRoomListId(userNo = userNo, chatroomId = chatRoomId).toString())
+        this.assertThatEqual(chatRoom.id?.userNo, 1L)
+        this.assertThatEqual(chatRoom.id?.chatroomId, 1L)
         this.assertThatGreaterThanOrEqual(chatRoom.joinDate.toEpochSecond(seoul), requestTime.toEpochSecond(seoul))
         this.assertThatEqual(chatRoom.chatroomName, "")
         this.assertThatEqual(chatRoom.lastChatSeq, 0L)
         this.assertThatEqual(chatRoom.startChatSeq, 0L)
         this.assertThatEqual(chatRoom.delYn, "N")
         this.assertThatEqual(chatRoom.delDate, null)
+    }
+
+    @Test
+    fun 채팅방리스트_모두가져오기() {
+        //given
+        val userNo = 1L
+        val chatRoomId1 = 1L
+        val chatRoomId2 = 2L
+        val requestTime = LocalDateTime.now()
+        val seoul = ZoneOffset.of("+09:00")
+        val entity1 = chatRoomListRepository.save(
+                ChatRoomList(
+                        id = ChatRoomListId(
+                                userNo = userNo,
+                                chatroomId = chatRoomId1
+                        )
+                )
+        )
+
+        val entity2 = chatRoomListRepository.save(
+                ChatRoomList(
+                        id = ChatRoomListId(
+                                userNo = userNo,
+                                chatroomId = chatRoomId2
+                        )
+                )
+        )
+
+        val chatRoomList = chatRoomListRepository.findAllById_UserNo(userNo)
+        this.assertThatIsNotNullValue(chatRoomList)
+        this.assertThatEqual(chatRoomList?.size, 2)
     }
 }
