@@ -28,5 +28,6 @@ class SeqUtil(
  * SEQ 를 이용하는 테이블 목록
  */
 enum class TableName(val tableName : String) {
-    CHATROOM_INFO("CHATROOM_INFO")
+    CHATROOM_INFO("CHATROOM_INFO"),
+    IMAGE("IMAGE")
 }
