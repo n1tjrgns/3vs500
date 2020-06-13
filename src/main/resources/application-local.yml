@@ -7,21 +7,33 @@ spring:
       enabled: true
   profiles: local
 
-  ## h2 db 추가
-  h2:
-    console:
-      enabled: true
-
   ##jpa sql 보여주는 설정
   ##콘솔에 출력되는 sql을 가독성 있게 해줌
   ##h2 DB의 sql 엔진을 Mysql InnoDB엔진으로 출력
+  #jpa:
+  #  show-sql: true
+  #  properties:
+  #    hibernate:
+  #      format_sql: true
+  #      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/applehip
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
   jpa:
-    show-sql: true
+    hibernate:
+      ddl-auto:  create #create 어플 실행시점에 자동 테이블 리셋모드
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.H2Dialect #hibernate.dialect' not set h2 에러 해결
+        # show_sql: true #sysout 용
         format_sql: true
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-
+        default_batch_fetch_size: 100 # 쿼리 where in 절 안의 조건 갯수 설정
+    #database-platform: org.hibernate.dialect.H2Dialect
+    #open-in-view: false # OSIV 설정 값 변경
 ## 쿼리에 매핑되는 값 확인
 logging:
   level:
