@@ -25,6 +25,6 @@ public class UsersSaveRequestDto { //User의 insert 로직을 담당 할 Dto.
                 .name(name)
                 .email(email)
                 .password(password)
-                .build();
+                .JoinUserBuilder();
     }
 }
