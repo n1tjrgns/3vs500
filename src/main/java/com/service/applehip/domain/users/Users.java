@@ -11,7 +11,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Builder
 public class Users {//extends BaseTimeEntity //회원정보 클래스
 
     @Id
@@ -33,22 +32,22 @@ public class Users {//extends BaseTimeEntity //회원정보 클래스
     @Enumerated(EnumType.STRING)
     private Role role;          //소셜 로그인 권한
 
-
-    /*@Builder
+    //일반 로그인 전용 빌더
+    @Builder(builderClassName = "JoinUserBuilder", buildMethodName = "JoinUserBuilder")
     public Users(String name, String email, String password){
         this.name = name;
-        this.email = "test@TEST.com";
+        this.email = email;
         this.password = password;
     }
 
     //소셜 로그인 전용 빌더
-    @Builder
+    @Builder(builderClassName = "JoinSocialUserBuilder", builderMethodName = "JoinSocialUserBuilder")
     public Users(String name, String email,  String picture, Role role){
         this.name = name;
         this.email = email;
-        this.picture = "picture@@@";
+        this.picture = picture;
         this.role = role;
-    }*/
+    }
 
     //update 메소드
     public void update(String password){
