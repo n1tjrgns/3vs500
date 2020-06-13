@@ -65,6 +65,29 @@ public class UsersGQApiControllerTest {
                 " email:\""+requestDto.getEmail()+"\", " +
                 " password:\""+requestDto.getPassword()+"\" })}";
 
+        /*
+        //요청 데이터를 JSONObject에 담기
+        String body = GraphqlTester.graphqlTest(query, restTemplate, url);
+        JSONObject queryJson = new JSONObject();
+        queryJson.put("query",query);
+
+        //헤더 셋팅
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(queryJson.toString(), httpHeaders);
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, httpEntity, String.class);
+
+        //응답코드 테스트
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        //응답바디 데이터 유무 확인
+        assertThat(responseEntity.getBody()).isNotNull();
+
+        //assertThat(new JSONObject(responseEntity.getBody()).get("data")).isNotNull();
+        //((JSONObject) new JSONObject(responseEntity.getBody()).get("data")).get("saveUser");
+        */
+        //위 주석 블럭을 아래 GraphqlTester를 통해 대체 가능
         String body = GraphqlTester.graphqlTest(query, restTemplate, url);
         JSONObject dataJson = (JSONObject) new JSONObject(body).get("data");
 
@@ -88,7 +111,7 @@ public class UsersGQApiControllerTest {
                 .name("test")
                 .email("test@test.com")
                 .password("123")
-                .build());
+                .JoinUserBuilder());
 
 
         String modyfiyingPassword = "456";
@@ -127,7 +150,7 @@ public class UsersGQApiControllerTest {
                 .name("test")
                 .email("test@test.com")
                 .password("123")
-                .build());
+                .JoinUserBuilder());
         String url = "http://localhost:"+port+"/graphql";
 
         String queryName = "findUser";  //쿼리 이름
